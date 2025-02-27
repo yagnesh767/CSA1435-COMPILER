@@ -1,0 +1,115 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <math.h>
+#include <string.h>
+
+#define MAX 100
+
+// Stack for operators
+char opStack[MAX];
+int top = -1;
+
+// Stack for evaluation
+double evalStack[MAX];
+int evalTop = -1;
+
+// Function to push to operator stack
+void push(char ch) {
+    opStack[++top] = ch;
+}
+
+// Function to pop from operator stack
+char pop() {
+    return opStack[top--];
+}
+
+// Function to check precedence of operators
+int precedence(char op) {
+    if (op == '(') return 0;
+    if (op == '+' || op == '-') return 1;
+    if (op == '*' || op == '/') return 2;
+    return -1;
+}
+
+// Function to check if character is an operator
+int isOperator(char ch) {
+    return (ch == '+' || ch == '-' || ch == '*' || ch == '/');
+}
+
+// Function to convert infix to postfix
+void infixToPostfix(char infix[], char postfix[]) {
+    int i = 0, j = 0;
+    char ch;
+    
+    while ((ch = infix[i++]) != '\0') {
+        if (isdigit(ch) || isalpha(ch)) {
+            postfix[j++] = ch;
+        } else if (ch == '(') {
+            push(ch);
+        } else if (ch == ')') {
+            while (top != -1 && opStack[top] != '(') {
+                postfix[j++] = pop();
+            }
+            pop(); // Pop '('
+        } else if (isOperator(ch)) {
+            while (top != -1 && precedence(opStack[top]) >= precedence(ch)) {
+                postfix[j++] = pop();
+            }
+            push(ch);
+        }
+    }
+    while (top != -1) {
+        postfix[j++] = pop();
+    }
+    postfix[j] = '\0';
+}
+
+// Function to push to evaluation stack
+void pushEval(double num) {
+    evalStack[++evalTop] = num;
+}
+
+// Function to pop from evaluation stack
+double popEval() {
+    return evalStack[evalTop--];
+}
+
+// Function to evaluate postfix expression
+double evaluatePostfix(char postfix[]) {
+    int i = 0;
+    char ch;
+    double op1, op2;
+    
+    while ((ch = postfix[i++]) != '\0') {
+        if (isdigit(ch)) {
+            pushEval(ch - '0'); // Convert char to int
+        } else if (isOperator(ch)) {
+            op2 = popEval();
+            op1 = popEval();
+            switch (ch) {
+                case '+': pushEval(op1 + op2); break;
+                case '-': pushEval(op1 - op2); break;
+                case '*': pushEval(op1 * op2); break;
+                case '/': pushEval(op1 / op2); break;
+            }
+        }
+    }
+    return popEval();
+}
+
+int main() {
+    char infix[MAX], postfix[MAX];
+    double result;
+
+    printf("Enter an arithmetic expression: ");
+    scanf("%s", infix);
+
+    infixToPostfix(infix, postfix);
+    printf("Postfix Expression: %s\n", postfix);
+
+    result = evaluatePostfix(postfix);
+    printf("Result: %.2f\n", result);
+
+    return 0;
+}
