@@ -1,0 +1,83 @@
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+
+// Global variables
+char input[100];
+int pos = 0;
+int error = 0;
+
+// Function declarations
+void E();
+void EPrime();
+void T();
+void TPrime();
+void F();
+
+// Utility function to match and move the pointer
+void match(char expected) {
+    if (input[pos] == expected) {
+        pos++;
+    } else {
+        error = 1;
+    }
+}
+
+// Recursive descent functions
+void E() {
+    T();
+    EPrime();
+}
+
+void EPrime() {
+    if (input[pos] == '+') {
+        match('+');
+        T();
+        EPrime();
+    }
+}
+
+void T() {
+    F();
+    TPrime();
+}
+
+void TPrime() {
+    if (input[pos] == '*') {
+        match('*');
+        F();
+        TPrime();
+    }
+}
+
+void F() {
+    if (input[pos] == '(') {
+        match('(');
+        E();
+        if (input[pos] == ')') {
+            match(')');
+        } else {
+            error = 1;
+        }
+    } else if (isalnum(input[pos])) {
+        match(input[pos]);
+    } else {
+        error = 1;
+    }
+}
+
+int main() {
+    printf("Enter the input string: ");
+    scanf("%s", input);
+
+    E(); // Start parsing from the start symbol
+
+    // Check for errors and if all input is consumed
+    if (error == 0 && input[pos] == '\0') {
+        printf("Input string is accepted.\n");
+    } else {
+        printf("Input string is rejected.\n");
+    }
+
+    return 0;
+}
