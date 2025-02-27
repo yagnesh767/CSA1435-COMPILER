@@ -1,0 +1,112 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+// Structure to store symbol information
+struct Symbol {
+    char name[20];
+    char type[10];
+    int size;
+    int lineNo;
+};
+
+// Symbol table as an array of structures
+struct Symbol symbolTable[100];
+int count = 0;
+
+// Function to insert a new symbol
+void insertSymbol(char name[], char type[], int size, int lineNo) {
+    // Check if symbol already exists
+    for (int i = 0; i < count; i++) {
+        if (strcmp(symbolTable[i].name, name) == 0) {
+            printf("Error: Symbol '%s' already declared.\n", name);
+            return;
+        }
+    }
+    
+    // Insert new symbol
+    strcpy(symbolTable[count].name, name);
+    strcpy(symbolTable[count].type, type);
+    symbolTable[count].size = size;
+    symbolTable[count].lineNo = lineNo;
+    count++;
+    printf("Symbol '%s' inserted successfully.\n", name);
+}
+
+// Function to search for a symbol
+void searchSymbol(char name[]) {
+    for (int i = 0; i < count; i++) {
+        if (strcmp(symbolTable[i].name, name) == 0) {
+            printf("Symbol found:\n");
+            printf("Name: %s, Type: %s, Size: %d, Line No: %d\n", 
+                symbolTable[i].name, symbolTable[i].type, 
+                symbolTable[i].size, symbolTable[i].lineNo);
+            return;
+        }
+    }
+    printf("Symbol '%s' not found.\n", name);
+}
+
+// Function to display the symbol table
+void displaySymbolTable() {
+    if (count == 0) {
+        printf("Symbol table is empty.\n");
+        return;
+    }
+    printf("\nSymbol Table:\n");
+    printf("Name\tType\tSize\tLine No\n");
+    printf("------------------------------------\n");
+    for (int i = 0; i < count; i++) {
+        printf("%s\t%s\t%d\t%d\n", 
+            symbolTable[i].name, symbolTable[i].type, 
+            symbolTable[i].size, symbolTable[i].lineNo);
+    }
+}
+
+int main() {
+    int choice;
+    char name[20], type[10];
+    int size, lineNo;
+
+    while (1) {
+        printf("\nSymbol Table Operations:\n");
+        printf("1. Insert Symbol\n");
+        printf("2. Search Symbol\n");
+        printf("3. Display Symbol Table\n");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter symbol name: ");
+                scanf("%s", name);
+                printf("Enter symbol type: ");
+                scanf("%s", type);
+                printf("Enter symbol size: ");
+                scanf("%d", &size);
+                printf("Enter line number: ");
+                scanf("%d", &lineNo);
+                insertSymbol(name, type, size, lineNo);
+                break;
+
+            case 2:
+                printf("Enter symbol name to search: ");
+                scanf("%s", name);
+                searchSymbol(name);
+                break;
+
+            case 3:
+                displaySymbolTable();
+                break;
+
+            case 4:
+                printf("Exiting...\n");
+                exit(0);
+
+            default:
+                printf("Invalid choice. Try again.\n");
+        }
+    }
+    return 0;
+}
