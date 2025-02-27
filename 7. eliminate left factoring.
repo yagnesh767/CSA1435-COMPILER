@@ -1,0 +1,37 @@
+#include <stdio.h>
+#include <string.h>
+
+// Function to eliminate left factoring
+void eliminateLeftFactoring(char nonTerminal, char alpha[], char beta1[], char beta2[]) {
+    char newNonTerminal[3] = {nonTerminal, '\'', '\0'}; // e.g., A' for A
+
+    printf("\nGrammar after eliminating left factoring:\n");
+    printf("%c -> %s %s\n", nonTerminal, alpha, newNonTerminal);
+    printf("%s -> %s | %s\n", newNonTerminal, beta1, beta2);
+}
+
+int main() {
+    char nonTerminal;
+    char alpha[20], beta1[20], beta2[20];
+
+    printf("Enter the non-terminal: ");
+    scanf(" %c", &nonTerminal);
+
+    printf("Enter the common prefix (α): ");
+    scanf("%s", alpha);
+
+    printf("Enter the first alternative after the common prefix (β1): ");
+    scanf("%s", beta1);
+
+    printf("Enter the second alternative after the common prefix (β2): ");
+    scanf("%s", beta2);
+
+    // Check if the input has common prefix
+    if (strcmp(beta1, beta2) == 0) {
+        printf("Error: Alternatives are identical. No factoring needed.\n");
+    } else {
+        eliminateLeftFactoring(nonTerminal, alpha, beta1, beta2);
+    }
+
+    return 0;
+}
