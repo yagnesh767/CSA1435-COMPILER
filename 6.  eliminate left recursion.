@@ -1,0 +1,33 @@
+#include <stdio.h>
+#include <string.h>
+
+void eliminateLeftRecursion(char nonTerminal, char alpha[], char beta[]) {
+    char newNonTerminal[3] = {nonTerminal, '\'', '\0'}; // e.g., E' for E
+    
+    printf("\nGrammar after eliminating left recursion:\n");
+    printf("%c -> %s %s\n", nonTerminal, beta, newNonTerminal);
+    printf("%s -> %s %s | ε\n", newNonTerminal, alpha, newNonTerminal);
+}
+
+int main() {
+    char nonTerminal;
+    char alpha[20], beta[20];
+    
+    printf("Enter the non-terminal: ");
+    scanf(" %c", &nonTerminal);
+
+    printf("Enter the left recursive part (α) after the non-terminal: ");
+    scanf("%s", alpha);
+    
+    printf("Enter the non-recursive alternative (β): ");
+    scanf("%s", beta);
+
+    // Check for immediate left recursion
+    if (beta[0] == nonTerminal) {
+        printf("Error: Left recursion present in β. Provide a non-recursive alternative.\n");
+    } else {
+        eliminateLeftRecursion(nonTerminal, alpha, beta);
+    }
+
+    return 0;
+}
